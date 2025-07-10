@@ -20,7 +20,7 @@ Your Kanna`;
 // Unlock love letter if name matches
 function checkName() {
   const input = document.getElementById("secretName").value.trim().toLowerCase();
-  const allowedNames = ["cutie", "love", "baby", "darling"]; // Add more options
+  const allowedNames = ["cutie", "love", "baby", "darling"];
 
   if (allowedNames.includes(input)) {
     const letterBox = document.getElementById("love-letter");
@@ -63,17 +63,23 @@ function closeMessage() {
 
 // Countdown timer
 function updateCountdown() {
-  const nextDate = new Date(2025, 7, 13); // August 13, 2025
+  const nextDate = new Date(2025, 7, 13); // August 13, 2025 (Month is 0-indexed)
   const now = new Date();
   const diff = nextDate - now;
 
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  if (diff > 0) {
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 
-  document.getElementById("countdown-days").textContent = days;
-  document.getElementById("countdown-hours").textContent = hours;
-  document.getElementById("countdown-mins").textContent = mins;
+    document.getElementById("countdown-days").textContent = days;
+    document.getElementById("countdown-hours").textContent = hours;
+    document.getElementById("countdown-mins").textContent = mins;
+  } else {
+    document.getElementById("countdown-days").textContent = 0;
+    document.getElementById("countdown-hours").textContent = 0;
+    document.getElementById("countdown-mins").textContent = 0;
+  }
 }
 setInterval(updateCountdown, 60000);
 updateCountdown();
@@ -83,13 +89,15 @@ function createConfetti() {
   const colors = ['#ff6b6b', '#f06595', '#cc5de8', '#845ef7', '#5c7cfa'];
   for (let i = 0; i < 80; i++) {
     const confetti = document.createElement("div");
-    confetti.className = "confetti";
+    confetti.className = "confetti fixed z-50";
+    confetti.style.position = "fixed";
     confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
     confetti.style.left = Math.random() * 100 + "vw";
     confetti.style.top = "-10px";
     confetti.style.width = Math.random() * 12 + 5 + "px";
     confetti.style.height = Math.random() * 12 + 5 + "px";
     confetti.style.borderRadius = "50%";
+    confetti.style.pointerEvents = "none";
 
     document.body.appendChild(confetti);
 
@@ -100,7 +108,8 @@ function createConfetti() {
       { top: '100vh', opacity: 0, transform: 'rotate(360deg)' }
     ], {
       duration: duration * 1000,
-      delay: Math.random() * 2000
+      delay: Math.random() * 2000,
+      easing: 'ease-out'
     });
 
     setTimeout(() => {
